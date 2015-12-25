@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">DungeonDart</string>
+
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_game_play">GamePlayActivity</string>
+    <string name="title_activity_how_to__play">How_to_Play</string>
+    <string name="title_activity_create_map">CreateMapActivity</string>
+</resources>

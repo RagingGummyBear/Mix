@@ -1,0 +1,70 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context="com.grizzlypenguins.dungeondart.Activities.GamePlayActivity"
+    android:id="@+id/MainLayout">
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="up"
+        android:id="@+id/moveUp"
+        android:layout_marginRight="0dp"
+        android:layout_marginEnd="0dp"
+        android:layout_alignParentStart="false"
+        android:layout_above="@+id/moveRight"
+        android:layout_alignRight="@+id/moveDown" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="down"
+        android:id="@+id/moveDown"
+        android:layout_below="@+id/moveLeft"
+        android:layout_marginLeft="300dp" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="left"
+        android:id="@+id/moveLeft"
+        android:layout_marginBottom="0dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginLeft="877px" />
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="right"
+        android:id="@+id/moveRight"
+        android:layout_alignTop="@+id/moveLeft"
+
+        android:layout_marginRight="0dp"
+        android:layout_marginLeft="200dp"
+ />
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:id="@+id/frameLayout">
+
+        <com.grizzlypenguins.dungeondart.Activities.GamePanel
+            android:layout_width="321dp"
+            android:layout_height="match_parent"
+            android:id="@+id/GamePanel"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:nestedScrollingEnabled="false"
+            android:layout_gravity="left|center_vertical"
+            android:visibility="visible" />
+    </FrameLayout>
+
+</RelativeLayout>
