@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.util.Log;
 
+import com.grizzlypenguins.dungeondart.Animation.SimpleAnimation;
 import com.grizzlypenguins.dungeondart.effects.PowerUpMovementSpeed;
 import com.grizzlypenguins.dungeondart.effects.PowerUpsAndTrapsBank;
 
@@ -103,7 +104,7 @@ public class Tile implements Serializable {
     public int use_powerUp()
     {
         int temp = powerUp;
-        powerUp = 0;
+        powerUp = -1;
         return temp;
     }
 
@@ -114,11 +115,11 @@ public class Tile implements Serializable {
     public int use_trap()
     {
         int temp = trap;
-        trap = 0;
+        trap =-1;
         return temp;
     }
 
-    public void render(Canvas c,float x, float y) {
+    public void render(Canvas c,float x, float y,SimpleAnimation monsterAnim) {
         if (shadow) {
 
             return;
@@ -131,7 +132,7 @@ public class Tile implements Serializable {
         }
         if(c==null)
         {
-            Log.v("Tile","The canvas is null");
+            Log.v("Tile", "The canvas is null");
             return;
         }
         switch (define) {
@@ -142,6 +143,16 @@ public class Tile implements Serializable {
             }
             case 1: {
                 c.drawBitmap(myFactory.getInstance().TileMovable, x, y, myFactory.getInstance().paint);
+                break;
+            }
+            case 2:
+            {
+                c.drawBitmap(myFactory.getInstance().TileStart,x,y,myFactory.getInstance().paint);
+                break;
+            }
+            case 3:
+            {
+                c.drawBitmap(myFactory.getInstance().TileFinish,x,y,myFactory.getInstance().paint);
                 break;
             }
             case 4: {
@@ -156,17 +167,25 @@ public class Tile implements Serializable {
                 c.drawBitmap(myFactory.getInstance().TileNFinish, x, y, myFactory.getInstance().paint);
                 break;
             }
+            case 7:{
+
+                c.drawBitmap(myFactory.getInstance().TileMovable, x, y, myFactory.getInstance().paint);
+                c.drawBitmap(myFactory.getInstance().EvilMonster,x,y,myFactory.getInstance().paint);
+                break;
+            }
             default: {
                 c.drawBitmap(myFactory.getInstance().TileMovable, x, y, myFactory.getInstance().paint);
                 break;
             }
         }
-        if(monster)
-        {
-            c.drawBitmap(myFactory.getInstance().EvilMonster,x,y,myFactory.getInstance().paint);
-        }
+
         PowerUpsAndTrapsBank.getInstance().renderTrap(c,x,y,trap);
         PowerUpsAndTrapsBank.getInstance().renderPowerUp(c,x,y,powerUp);
+        if(monster)
+        {
+           if(monsterAnim != null) monsterAnim.render(c,x,y);
+            //c.drawBitmap(myFactory.getInstance().EvilMonster,x,y,myFactory.getInstance().paint);
+        }
     }
 
 

@@ -15,6 +15,7 @@ import com.grizzlypenguins.dungeondart.effects.TrapLowerTorch;
 import com.grizzlypenguins.dungeondart.effects.TrapSlow;
 import com.grizzlypenguins.dungeondart.effects.TrapStun;
 
+import java.util.HashMap;
 import java.util.Random;
 
 /**
@@ -23,18 +24,30 @@ import java.util.Random;
 public class myFactory {
 
     Rand rand = Rand.getInstance();
+    public static int TILESIZE = 64;
+    public static final int TILENUMBER = 9;
+    private static myFactory ourInstance = new myFactory();
 
+
+    //pictures for tiles
     public Bitmap TileMovable;
     public Bitmap TileNotMovable;
     public Bitmap TileStart;
     public Bitmap TileFinish;
     public Bitmap TileNFinish;
     public Bitmap TorchLight;
+    public Bitmap arrowL,arrowD,arrowU,arrowR;
 
+    public Bitmap EvilMonster;  //Its used for render Monster's den in create map (no longer is being used for displaying the monster)
+
+
+    //animation pictures
     public Bitmap Character;
-    public Bitmap EvilMonster;
-    public MonsetNextStep monsetNextStep;  //pathfinding algo
+    public HashMap <String,Bitmap> mainCharacterPictures = new HashMap<>();
+    public HashMap <String,Bitmap> evilMonster = new HashMap<>();
 
+
+    //powerUps and traps pictures
     public Bitmap PowerUpR; //speed
     public Bitmap PowerUpB; //torchHealth
     public Bitmap PowerUpG; //higherTorchIntensity
@@ -47,11 +60,9 @@ public class myFactory {
 
     public Paint paint;
 
-    public static final int TILESIZE = 32;
-    public static final int TILENUMBER = 9;
-    private static myFactory ourInstance = new myFactory();
-
+    public MonsetNextStep monsetNextStep;  //pathfinding algo
     public FindNextStep findNextStep;
+    public Bitmap arrowKey;
 
     public static myFactory getInstance() {
         return ourInstance;
@@ -74,15 +85,15 @@ public class myFactory {
             for(int y=0;y<tileNum;y++)
             if(i<10 || i>tileNum-10 || y<10 || y>tileNum-10)
             {
-                tiles[i][y] =new Tile(0,0,0);
+                tiles[i][y] =new Tile(0,-1,-1);
             }
             else
             {
                 if(i == y || i==12 || i==tileNum-12 || y==12 || y == tileNum -12)
-                        tiles[i][y] = new Tile(2,0,0);
+                        tiles[i][y] = new Tile(2,-1,-1);
                 else
                 {
-                    tiles[i][y] =new Tile(0,0,0);
+                    tiles[i][y] =new Tile(0,-1,-1);
                 }
             }
         }
@@ -115,7 +126,7 @@ public class myFactory {
 
     public Tile test_tile_1()
     {
-        return new Tile(Rand.getInstance().random.nextInt(4),0,0);
+        return new Tile(Rand.getInstance().random.nextInt(4),-1,-1);
     }
 
     public Tile[][] test_Tiles_1(int tileNumber)
@@ -130,7 +141,7 @@ public class myFactory {
                if(i>10 && i <tileNumber-10 && y>10 && y<tileNumber-10) temp[i][y] = new Tile(Rand.getInstance().random.nextInt(4),Rand.getInstance().random.nextInt(6),Rand.getInstance().random.nextInt(6));
                 else
                {
-                   temp[i][y] = new Tile(0,0,0);
+                   temp[i][y] = new Tile(0,-1,-1);
                }
             }
         }
@@ -140,24 +151,24 @@ public class myFactory {
     //defines the tile with : 0 wall,1 movable,2 start,3 finish, 4 choosenStart,5 working exit, 6 not working exit, 7 monsterDen
     public Tile newStartTile()
     {
-        return new Tile(2,0,0);
+        return new Tile(2,-1,-1);
     }
 
     public Tile newFinishTile()
     {
-        return new Tile(3,0,0);
+        return new Tile(3,-1,-1);
     }
     public Tile newMovableTile()
     {
-        return new Tile(1,0,0);
+        return new Tile(1,-1,-1);
     }
     public Tile newPowerUpTile()
     {
-        return new Tile(1,Rand.getInstance().random.nextInt(4),0);
+        return new Tile(1,Rand.getInstance().random.nextInt(3),-1);
     }
     public Tile newTrapTile()
     {
-        return new Tile(1,0,Rand.getInstance().random.nextInt(4));
+        return new Tile(1,-1,Rand.getInstance().random.nextInt(3));
     }
     public Tile newTrapAndPowerUpTile()
     {
@@ -166,12 +177,12 @@ public class myFactory {
 
     public Tile newMonsterDenTile()
     {
-        return new Tile(7,0,0);
+        return new Tile(7,-1,-1);
     }
 
     public Tile newWallTile()
     {
-        return new Tile(0,0,0);
+        return new Tile(0,-1,-1);
     }
 
     public LevelMap test_map_2(int i)
@@ -317,6 +328,21 @@ public class myFactory {
         {
             EvilMonster = getResizedBitmap(EvilMonster,myFactory.TILESIZE,myFactory.TILESIZE);
         }
+
+        for(String  temp : mainCharacterPictures.keySet())
+        {
+            if(temp != null)
+            {
+                mainCharacterPictures.put(temp,getResizedBitmap(mainCharacterPictures.get(temp),TILESIZE,TILESIZE));
+            }
+        }
+        for(String  temp : evilMonster.keySet())
+        {
+            if(temp != null)
+            {
+                evilMonster.put(temp,getResizedBitmap(evilMonster.get(temp),TILESIZE,TILESIZE));
+            }
+        }
     }
 
     public int [][] get_MovementMap(Tile [][]tiles)
@@ -417,6 +443,8 @@ public class myFactory {
                 }
                 tiles[i][y].setX(i);
                 tiles[i][y].setY(y);
+                tiles[i][y].trap = -1;
+                tiles[i][y].powerUp = -1;
             }
         }
         return new LevelMap(tiles,mapname,2000);
@@ -441,6 +469,11 @@ public class myFactory {
 
     }
 
+    public void set_Size(float f)
+    {
+        if(f/TILENUMBER<64)
+        TILESIZE = (int) (f/TILENUMBER);
+    }
 
 
 }

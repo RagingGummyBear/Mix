@@ -3,6 +3,8 @@ package com.grizzlypenguins.dungeondart;
 import android.graphics.Canvas;
 import android.util.Log;
 
+import com.grizzlypenguins.dungeondart.Animation.MainCharacterMovement;
+import com.grizzlypenguins.dungeondart.Animation.SpiderMonsterAnimation;
 import com.grizzlypenguins.dungeondart.CameraControl;
 import com.grizzlypenguins.dungeondart.Difficulty;
 import com.grizzlypenguins.dungeondart.GameLoop.FindNextStep;
@@ -41,6 +43,8 @@ public class PackedLevel implements Serializable {
         this.evilMonster = evilMonster;
         playerScoring = new PlayerScoring();
         myFactory.getInstance().findNextStep = new FindNextStep(myFactory.getInstance().get_MovementMap(levelMap.tiles),cameraControl.player_position,evilMonster.location);
+        mainCharacter.mainCharacterMovement = new MainCharacterMovement(cameraControl);
+        evilMonster.monsterAnim = new SpiderMonsterAnimation(evilMonster);
     }
 
    public void tick() throws Exception {
@@ -90,13 +94,13 @@ public class PackedLevel implements Serializable {
         try{
             cameraControl.preMonsterRender();
             levelMap.tiles[evilMonster.location.x][evilMonster.location.y].monster = true;
-            cameraControl.render(c);
+            cameraControl.render(c,evilMonster.monsterAnim);
         }
         catch (Exception e)
         {
             System.out.println(e.getMessage());
         }
-        evilMonster.render(c,0,0);
+        //evilMonster.render(c,0,0);
         mainCharacter.render(c);
         torchLight.render(c);
     }

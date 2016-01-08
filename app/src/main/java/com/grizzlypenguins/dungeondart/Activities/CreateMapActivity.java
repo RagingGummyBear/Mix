@@ -4,6 +4,16 @@ import android.app.Activity;
 import android.graphics.Canvas;
 import android.os.Handler;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.ListFragment;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v4.app.Fragment;
+import com.google.android.gms.maps.SupportMapFragment;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,7 +24,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 
+import com.grizzlypenguins.dungeondart.Activities.uiScalingClasses.ScaleCreateMapActivity;
+import com.grizzlypenguins.dungeondart.Activities.uiScalingClasses.ScaleGamePlayActivity;
 import com.grizzlypenguins.dungeondart.CameraControl;
 import com.grizzlypenguins.dungeondart.LevelMap;
 import com.grizzlypenguins.dungeondart.MyPoint;
@@ -25,14 +38,13 @@ import com.grizzlypenguins.dungeondart.myFactory;
 
 import java.util.ArrayList;
 
-public class CreateMapActivity extends Activity {
+public class CreateMapActivity extends FragmentActivity {
 
     CameraControl cameraControl;
     LevelMap levelMap;
 
     Handler timerHandler = new Handler();
     Runnable timerRunnable = new Runnable() {
-
         @Override
         public void run() {
 
@@ -45,14 +57,17 @@ public class CreateMapActivity extends Activity {
     private int mapWidth=100;
     private int mapHeight=100;
     float cameraZoom;
+    ScaleCreateMapActivity scaleCreateMapActivity;
 
     SurfaceView mapSurfaceView;
     ListView tileSelect;
+    ListFragment listFragment;
 
     Button moveUp;
     Button moveLeft;
     Button moveRight;
     Button moveDown;
+    Button selectTile;
 
     ArrayList<ListInput> listViewTiles = new ArrayList<ListInput>();
     String selectedTileType;
@@ -79,7 +94,8 @@ public class CreateMapActivity extends Activity {
         Log.v("Creating map","The tiles are null");
         render();
         timerHandler.postDelayed(timerRunnable, 500);
-
+        scaleCreateMapActivity = (ScaleCreateMapActivity) getIntent().getSerializableExtra("ScaleCreateMapActivity");
+        resizeLayouts();
 
     }
 
@@ -92,6 +108,15 @@ public class CreateMapActivity extends Activity {
         moveLeft = (Button) findViewById(R.id.moveLleft);
         moveRight = (Button) findViewById(R.id.moveRight);
         moveUp = (Button) findViewById(R.id.moveUp);
+        selectTile = (Button) findViewById(R.id.selectTile);
+
+        listFragment = (ListFragment)getSupportFragmentManager().findFragmentById(R.id.listFragment);
+        if(getSupportFragmentManager().findFragmentById(R.id.listFragment) == null) {
+            Log.v("CreateMapActivity","In initialization the listFragment is null");
+            initialize();
+        }
+        listFragment.getView().setVisibility(View.INVISIBLE);
+
 
         mapHeight = (int)getIntent().getSerializableExtra("mapHeight");
         mapWidth = (int)getIntent().getSerializableExtra("mapWidth");
@@ -120,7 +145,7 @@ public class CreateMapActivity extends Activity {
         listViewTiles.add(new ListInput( "traptile",0,0));
         listViewTiles.add(new ListInput( "powerupandtraptile",0,0));
         tileSelect.setAdapter(new ListElementAdapter(CreateMapActivity.this, listViewTiles));
-
+        listFragment.setListAdapter(new ListElementAdapter(CreateMapActivity.this, listViewTiles));
 
     }
 
@@ -202,6 +227,25 @@ public class CreateMapActivity extends Activity {
             }
         });
 
+        selectTile.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                switch(event.getAction()) {
+                    case MotionEvent.ACTION_DOWN:
+
+                        showTileFragment();
+                        // PRESSED
+                        return true; // if you want to handle the touch event
+                    case MotionEvent.ACTION_UP:
+                        //gamePanel.pressedButton("none");
+                        // RELEASED
+                        return true; // if you want to handle the touch event
+                }
+                return false;
+            }
+        });
+
 
         mapSurfaceView.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -216,7 +260,7 @@ public class CreateMapActivity extends Activity {
                    // Log.v("ontouch", temp);
                     float x = event.getX() / cameraZoom;
                     float y = event.getY() / cameraZoom;
-                    if (x > 0 && y > 0 && y < 288 && x < 288) {
+                    if (x > 0 && y > 0 && y < myFactory.TILESIZE*myFactory.TILENUMBER && x < myFactory.TILESIZE*myFactory.TILENUMBER) {
                         drawTileAtLocation(x, y);
                         render();
                     }
@@ -228,6 +272,63 @@ public class CreateMapActivity extends Activity {
         });
     }
 
+
+
+    void resizeLayouts()
+    {
+
+        RelativeLayout.LayoutParams layout;
+        /*
+        move_left.setHeight((int) (getWindow().getDecorView().getHeight()*0.05));
+        move_left.setWidth((int) (getWindow().getDecorView().getWidth()*0.05));
+        */
+        //layout = (RelativeLayout.LayoutParams) moveLeft.getLayoutParams();
+        moveLeft.getLayoutParams().width = scaleCreateMapActivity.middleButtonWidth;   //(int) (getResources().getDisplayMetrics().density*(getWindow().getDecorView().getWidth()*0.05));
+        moveLeft.getLayoutParams().height = scaleCreateMapActivity.middleButtonHeight; //(int)  (getResources().getDisplayMetrics().density*(getWindow().getDecorView().getHeight()*0.02));
+
+
+        // layout.height = (int) (getWindow().getDecorView().getHeight()*0.2);
+        // layout.width = (int) (getWindow().getDecorView().getWidth()*0.2);
+        //move_left.setLayoutParams(new RelativeLayout.LayoutParams(layout));
+
+        moveUp.getLayoutParams().width = scaleCreateMapActivity.notMiddleButtonWidth;
+        moveUp.getLayoutParams().height = scaleCreateMapActivity.notMiddleButtonHeight;
+
+        moveDown.getLayoutParams().width = scaleCreateMapActivity.notMiddleButtonWidth;
+        moveDown.getLayoutParams().height = scaleCreateMapActivity.notMiddleButtonHeight;
+
+        moveRight.getLayoutParams().width = scaleCreateMapActivity.middleButtonWidth;
+        moveRight.getLayoutParams().height = scaleCreateMapActivity.middleButtonHeight;
+
+        mapSurfaceView.getLayoutParams().width = scaleCreateMapActivity.GamePanel;
+        mapSurfaceView.getLayoutParams().height = scaleCreateMapActivity.GamePanel;
+
+        listFragment.getView().getLayoutParams().width = scaleCreateMapActivity.GamePanel;
+        listFragment.getView().getLayoutParams().height = scaleCreateMapActivity.GamePanel;
+
+        ((RelativeLayout.LayoutParams) moveLeft.getLayoutParams()).setMargins(scaleCreateMapActivity.leftButtonLeftMargin , scaleCreateMapActivity.leftButtonTopMargin,0,0);
+        ((RelativeLayout.LayoutParams) moveRight.getLayoutParams()).setMargins(scaleCreateMapActivity.rightButtonLeftMargin,0,0,0);
+        ((RelativeLayout.LayoutParams) moveDown.getLayoutParams()).setMargins(scaleCreateMapActivity.downButtonLeftMargin,0,0,0);
+        ((RelativeLayout.LayoutParams) moveUp.getLayoutParams()).setMargins(0,0,0,0);
+
+
+
+        // PackedLevel level ;
+        // GamePanel gamePanel;
+    }
+
+    public void showTileFragment()
+    {
+        listFragment.getView().setVisibility(View.VISIBLE);
+        mapSurfaceView.setVisibility(View.INVISIBLE);
+        //getFragmentManager().popBackStack();
+    }
+    public void hideTileFragment()
+    {
+        listFragment.getView().setVisibility(View.INVISIBLE);
+        mapSurfaceView.setVisibility(View.VISIBLE);
+        render();
+    }
 
 
     void drawTileAtLocation(float x,float y)
@@ -335,7 +436,7 @@ public class CreateMapActivity extends Activity {
             canvas.scale(cameraZoom, cameraZoom, 1, 1);
             canvas.save();
             try {
-                cameraControl.render(canvas);
+                cameraControl.render(canvas,null);
             } catch (Exception e) {
 
                 e.printStackTrace();

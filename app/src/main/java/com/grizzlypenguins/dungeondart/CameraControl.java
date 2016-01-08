@@ -4,6 +4,8 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.util.Log;
 
+import com.grizzlypenguins.dungeondart.Animation.SimpleAnimation;
+
 import java.io.Serializable;
 
 /**
@@ -67,12 +69,44 @@ public class CameraControl implements Serializable {
         return false;
     }
 
-    boolean movableTile(Tile t)
+    private boolean movableTile(Tile t)
     {
         if(t.getDefine()>0)
             return true;
         else
             return false;
+    }
+
+    public int moving() //used to determent the facing side and facing side;
+    {
+        int temp = -1; // 0 = down, 1 = right, 2 = up, 3 = left
+        if(move_up)
+        {
+            temp = 2;
+        }
+        else
+        {
+            if(move_down)
+            {
+                temp = 0;
+            }
+            else
+            {
+                if(move_left)
+                {
+                    temp = 3;
+                }
+                else
+                {
+                    if(move_right)
+                    {
+                        temp = 1;
+                    }
+                }
+            }
+        }
+
+       return temp;
     }
 
     private Tile move()
@@ -153,7 +187,7 @@ public class CameraControl implements Serializable {
         }
     }
 
-    public void render (Canvas c) throws Exception {
+    public void render (Canvas c,SimpleAnimation monsterAnim) throws Exception {
        if(moved) {
 
            moved = false;
@@ -165,7 +199,7 @@ public class CameraControl implements Serializable {
         for(int i=0;i<myFactory.TILENUMBER;i++)
         {
             for(int y=0;y<myFactory.TILENUMBER;y++) {
-               if(c != null) tiles[i][y].render(c, (float) (i * myFactory.TILESIZE), (float) (y * myFactory.TILESIZE));
+               if(c != null) tiles[i][y].render(c, (float) (i * myFactory.TILESIZE), (float) (y * myFactory.TILESIZE),monsterAnim);
                 else
                    Log.v("CameraControl","The canvas is null idiot");
             }

@@ -93,6 +93,7 @@ public class ListElementAdapter extends BaseAdapter {
                         if(temp2!=null)
                         {
                             temp2.chooseTile(mapName.getText().toString());
+                            temp2.hideTileFragment();
                         }
                     }
 

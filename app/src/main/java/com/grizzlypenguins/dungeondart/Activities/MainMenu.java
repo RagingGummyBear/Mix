@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.grizzlypenguins.dungeondart.Activities.uiScalingClasses.ScaleCreateMapActivity;
 import com.grizzlypenguins.dungeondart.Activities.uiScalingClasses.ScaleGamePlayActivity;
 import com.grizzlypenguins.dungeondart.Difficulty;
 import com.grizzlypenguins.dungeondart.Level;
@@ -115,6 +116,7 @@ public class MainMenu extends Activity {
         createMapScreen = (FrameLayout) findViewById(R.id.createMapScreen);
 
         newGame = (Button)findViewById(R.id.newGameButton);
+
         exitGame = (Button)findViewById(R.id.startGameButton);
         startGame = (Button) findViewById(R.id.startGameButton);
         back = (Button) findViewById(R.id.backButton);
@@ -261,6 +263,14 @@ public class MainMenu extends Activity {
                 temp = (EditText)findViewById(R.id.mapHeight);
                 temp2 = Integer.parseInt(temp.getText().toString());
                 myIntent.putExtra("mapHeight",temp2);
+
+                ScaleCreateMapActivity scaleCreateMapActivity= new ScaleCreateMapActivity();
+                scaleCreateMapActivity.setAll(getWindow().getDecorView().getWidth(), getWindow().getDecorView().getHeight());
+
+                myIntent.putExtra("ScaleCreateMapActivity", scaleCreateMapActivity);
+
+
+
                 startActivity(myIntent);
             }
         });
@@ -351,6 +361,17 @@ public class MainMenu extends Activity {
     private void initializeBitmaps()
             {
 
+                if(getWindow().getDecorView().getHeight() < getWindow().getDecorView().getWidth())
+                myFactory.getInstance().set_Size(getWindow().getDecorView().getHeight());
+                else
+                    myFactory.getInstance().set_Size(getWindow().getDecorView().getWidth());
+
+                myFactory.getInstance().arrowL = BitmapFactory.decodeResource(getResources(),R.drawable.arrowl);
+                myFactory.getInstance().arrowR = BitmapFactory.decodeResource(getResources(),R.drawable.arrowr);
+                myFactory.getInstance().arrowU = BitmapFactory.decodeResource(getResources(),R.drawable.arrowu);
+                myFactory.getInstance().arrowD = BitmapFactory.decodeResource(getResources(),R.drawable.arrowd);
+
+
                 myFactory.getInstance().TileNotMovable = BitmapFactory.decodeResource(getResources(), R.drawable.notmovabletile);
                 myFactory.getInstance().TileMovable = BitmapFactory.decodeResource(getResources(), R.drawable.movabletile);
                 myFactory.getInstance().TorchLight = BitmapFactory.decodeResource(getResources(),R.drawable.beginingfog);
@@ -370,6 +391,44 @@ public class MainMenu extends Activity {
                 myFactory.getInstance().TrapR = BitmapFactory.decodeResource(getResources(),R.drawable.trapr);
                 myFactory.getInstance().TrapY = BitmapFactory.decodeResource(getResources(),R.drawable.trapy);
                 myFactory.getInstance().TrapB = BitmapFactory.decodeResource(getResources(),R.drawable.trapb);
+
+                myFactory.getInstance().mainCharacterPictures.put("standStillD",BitmapFactory.decodeResource(getResources(),R.drawable.standstilld));
+                myFactory.getInstance().mainCharacterPictures.put("standStillU",BitmapFactory.decodeResource(getResources(),R.drawable.standstillu));
+                myFactory.getInstance().mainCharacterPictures.put("standStillR",BitmapFactory.decodeResource(getResources(),R.drawable.standstillr));
+                myFactory.getInstance().mainCharacterPictures.put("standStillL",BitmapFactory.decodeResource(getResources(),R.drawable.standstilll));
+
+                myFactory.getInstance().mainCharacterPictures.put("walkPicture1D",BitmapFactory.decodeResource(getResources(),R.drawable.walk1d));
+                myFactory.getInstance().mainCharacterPictures.put("walkPicture1U",BitmapFactory.decodeResource(getResources(),R.drawable.walk1u));
+                myFactory.getInstance().mainCharacterPictures.put("walkPicture1R",BitmapFactory.decodeResource(getResources(),R.drawable.walk1r));
+                myFactory.getInstance().mainCharacterPictures.put("walkPicture1L",BitmapFactory.decodeResource(getResources(),R.drawable.walk1l));
+
+                myFactory.getInstance().mainCharacterPictures.put("walkPicture2D",BitmapFactory.decodeResource(getResources(),R.drawable.walk2d));
+                myFactory.getInstance().mainCharacterPictures.put("walkPicture2U",BitmapFactory.decodeResource(getResources(),R.drawable.walk2u));
+                myFactory.getInstance().mainCharacterPictures.put("walkPicture2R",BitmapFactory.decodeResource(getResources(),R.drawable.walk2r));
+                myFactory.getInstance().mainCharacterPictures.put("walkPicture2L",BitmapFactory.decodeResource(getResources(),R.drawable.walk2l));
+
+                myFactory.getInstance().mainCharacterPictures.put("walkPicture3D",BitmapFactory.decodeResource(getResources(),R.drawable.walk3d));
+                myFactory.getInstance().mainCharacterPictures.put("walkPicture3U",BitmapFactory.decodeResource(getResources(),R.drawable.walk3u));
+                myFactory.getInstance().mainCharacterPictures.put("walkPicture3R",BitmapFactory.decodeResource(getResources(),R.drawable.walk3r));
+                myFactory.getInstance().mainCharacterPictures.put("walkPicture3L",BitmapFactory.decodeResource(getResources(),R.drawable.walk3l));
+
+                myFactory.getInstance().evilMonster.put("standStillD",BitmapFactory.decodeResource(getResources(),R.drawable.emstandstilld));
+                myFactory.getInstance().evilMonster.put("standStillU",BitmapFactory.decodeResource(getResources(),R.drawable.emstandstillu));
+                myFactory.getInstance().evilMonster.put("standStillR",BitmapFactory.decodeResource(getResources(),R.drawable.emstandstillr));
+                myFactory.getInstance().evilMonster.put("standStillL",BitmapFactory.decodeResource(getResources(),R.drawable.emstandstilll));
+
+                myFactory.getInstance().evilMonster.put("walkPicture1D",BitmapFactory.decodeResource(getResources(),R.drawable.emwalk1d));
+                myFactory.getInstance().evilMonster.put("walkPicture1U",BitmapFactory.decodeResource(getResources(),R.drawable.emwalk1u));
+                myFactory.getInstance().evilMonster.put("walkPicture1R",BitmapFactory.decodeResource(getResources(),R.drawable.emwalk1r));
+                myFactory.getInstance().evilMonster.put("walkPicture1L",BitmapFactory.decodeResource(getResources(),R.drawable.emwalk1l));
+
+                myFactory.getInstance().evilMonster.put("walkPicture2D",BitmapFactory.decodeResource(getResources(),R.drawable.emwalk2d));
+                myFactory.getInstance().evilMonster.put("walkPicture2U",BitmapFactory.decodeResource(getResources(),R.drawable.emwalk2u));
+                myFactory.getInstance().evilMonster.put("walkPicture2R",BitmapFactory.decodeResource(getResources(),R.drawable.emwalk2r));
+                myFactory.getInstance().evilMonster.put("walkPicture2L",BitmapFactory.decodeResource(getResources(),R.drawable.emwalk2l));
+
+
+
 
                 myFactory.getInstance().resize();
 

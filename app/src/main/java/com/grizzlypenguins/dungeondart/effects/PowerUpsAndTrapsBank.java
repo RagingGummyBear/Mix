@@ -55,19 +55,15 @@ public class PowerUpsAndTrapsBank {
         {
             case 0:
             {
+                powerUpR.render(c,x,y);
                 break;
             }
             case 1:
             {
-                powerUpR.render(c,x,y);
+                powerUpY.render(c,x,y);
              break;
             }
             case 2:
-            {
-                powerUpY.render(c,x,y);
-                break;
-            }
-            case 3:
             {
                 powerUpG.render(c,x,y);
                 break;
@@ -86,19 +82,15 @@ public class PowerUpsAndTrapsBank {
         {
             case 0:
             {
+                trapStun.render(c,x,y);
                 break;
             }
             case 1:
             {
-                trapStun.render(c,x,y);
-                break;
-            }
-            case 2:
-            {
                 trapSlow.render(c,x,y);
                 break;
             }
-            case 3:
+            case 2:
             {
                 trapLowerTorch.render(c,x,y);
                 break;
@@ -117,21 +109,18 @@ public class PowerUpsAndTrapsBank {
         {
             case 0:
             {
-                return null;
+                return myFactory.getInstance().newPowerUpMovementSpeed();
 
             }
             case 1:
             {
-                return myFactory.getInstance().newPowerUpMovementSpeed();
+                return myFactory.getInstance().newPowerUpBonusPoints();
             }
             case 2:
             {
-                return myFactory.getInstance().newPowerUpBonusPoints();
-            }
-            case 3:
-            {
                 return myFactory.getInstance().newPowerUpTorchHealth();
             }
+
             default:
             {
                 return null;
@@ -146,17 +135,14 @@ public class PowerUpsAndTrapsBank {
         {
             case 0:
             {
-                return null;
+                return myFactory.getInstance().newTrapStun();
+
             }
             case 1:
             {
-                return myFactory.getInstance().newTrapStun();
-            }
-            case 2:
-            {
                 return myFactory.getInstance().newTrapSlow();
             }
-            case 3:
+            case 2:
             {
                 return myFactory.getInstance().newTrapLowerTorch();
             }

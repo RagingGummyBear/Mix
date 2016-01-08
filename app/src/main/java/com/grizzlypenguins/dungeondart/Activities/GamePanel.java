@@ -36,7 +36,6 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 
 
 
-
     public GamePanel(Context context, AttributeSet attrs)
     {
         super(context, attrs);
@@ -100,7 +99,7 @@ public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
     {
 
         myGameLoop.setRunning(true);
-        myGameLoop.start();
+        myGameLoop.start();  //illegal state
         level.playerScoring.setStartTime(System.nanoTime()/1000000);
     }
 

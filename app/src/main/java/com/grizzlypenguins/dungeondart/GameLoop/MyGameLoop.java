@@ -14,6 +14,14 @@ public class MyGameLoop extends Thread {
     private GamePanel view;
     private boolean running = false;
     boolean once=true;
+    boolean finished = true;
+    Runnable render = new Runnable() {
+        @Override
+        public void run() {
+           if(finished) render();
+        }
+    };
+    Thread renderSecondary = new Thread(render);
 
     public MyGameLoop(GamePanel view) {
         this.view = view;
@@ -44,7 +52,10 @@ public class MyGameLoop extends Thread {
             }
             if(running)
                 if(once) {
-                    render();
+                    renderSecondary.run();
+                  //  render();
+
+
                 }
             frames++;
 
@@ -66,8 +77,9 @@ public class MyGameLoop extends Thread {
         view.tick();
     }
 
-    void render()
+    synchronized void  render()
     {
+        finished = false;
         Canvas c = null;
         try {
             c = view.getHolder().lockCanvas();
@@ -77,7 +89,6 @@ public class MyGameLoop extends Thread {
             synchronized ( view.getHolder()) {
                 if( c != null ){
                     view.draw(c);
-
                 }
             }
         } finally {
@@ -85,5 +96,6 @@ public class MyGameLoop extends Thread {
                 view.getHolder().unlockCanvasAndPost(c);
             }
         }
+        finished = true;
     }
 }

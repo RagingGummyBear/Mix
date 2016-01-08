@@ -3,6 +3,7 @@ package com.grizzlypenguins.dungeondart.Activities;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -27,6 +28,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.grizzlypenguins.dungeondart.Activities.uiScalingClasses.ScaleGamePlayActivity;
 import com.grizzlypenguins.dungeondart.PackedLevel;
 import com.grizzlypenguins.dungeondart.R;
+import com.grizzlypenguins.dungeondart.myFactory;
 
 public class GamePlayActivity extends Activity implements SensorEventListener {
 
@@ -111,6 +113,7 @@ public class GamePlayActivity extends Activity implements SensorEventListener {
         move_left = (Button)findViewById(R.id.moveLeft);
         move_right = (Button)findViewById(R.id.moveRight);
 
+
         gamePanel.level = level;
         sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
         lastUpdate = System.currentTimeMillis();
@@ -127,7 +130,7 @@ public class GamePlayActivity extends Activity implements SensorEventListener {
         layout = (RelativeLayout.LayoutParams) move_left.getLayoutParams();
         move_left.getLayoutParams().width = scaleGamePlayActivity.middleButtonWidth;   //(int) (getResources().getDisplayMetrics().density*(getWindow().getDecorView().getWidth()*0.05));
         move_left.getLayoutParams().height = scaleGamePlayActivity.middleButtonHeight; //(int)  (getResources().getDisplayMetrics().density*(getWindow().getDecorView().getHeight()*0.02));
-
+        Log.v("GamePlayActivity","width: " + scaleGamePlayActivity.middleButtonWidth+" height: " + scaleGamePlayActivity.middleButtonHeight);
 
         // layout.height = (int) (getWindow().getDecorView().getHeight()*0.2);
        // layout.width = (int) (getWindow().getDecorView().getWidth()*0.2);
@@ -149,6 +152,20 @@ public class GamePlayActivity extends Activity implements SensorEventListener {
         ((RelativeLayout.LayoutParams) move_right.getLayoutParams()).setMargins(scaleGamePlayActivity.rightButtonLeftMargin,0,0,0);
         ((RelativeLayout.LayoutParams) move_down.getLayoutParams()).setMargins(scaleGamePlayActivity.downButtonLeftMargin,0,0,0);
         ((RelativeLayout.LayoutParams) move_up.getLayoutParams()).setMargins(0,0,0,0);
+
+        if(android.os.Build.VERSION.SDK_INT < 16) {
+            move_left.setBackgroundDrawable(new BitmapDrawable(getResources(), myFactory.getInstance().arrowL));
+            move_up.setBackgroundDrawable(new BitmapDrawable(getResources(), myFactory.getInstance().arrowR));
+            move_down.setBackgroundDrawable(new BitmapDrawable(getResources(), myFactory.getInstance().arrowD));
+            move_right.setBackgroundDrawable(new BitmapDrawable(getResources(), myFactory.getInstance().arrowU));
+        }
+        else {
+            move_left.setBackground(new BitmapDrawable(getResources(),myFactory.getInstance().arrowL));
+            move_up.setBackground(new BitmapDrawable(getResources(),myFactory.getInstance().arrowU));
+            move_down.setBackground(new BitmapDrawable(getResources(),myFactory.getInstance().arrowD));
+            move_right.setBackground(new BitmapDrawable(getResources(),myFactory.getInstance().arrowR));
+
+        }
 
 
 
@@ -207,7 +224,7 @@ public class GamePlayActivity extends Activity implements SensorEventListener {
                         // PRESSED
                         return true; // if you want to handle the touch event
                     case MotionEvent.ACTION_UP:
-                       // gamePanel.pressedButton("none");
+                        gamePanel.pressedButton("none");
                         // RELEASED
                         return true; // if you want to handle the touch event
                 }

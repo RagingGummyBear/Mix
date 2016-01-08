@@ -4,6 +4,8 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 
+import com.grizzlypenguins.dungeondart.Animation.MainCharacterMovement;
+import com.grizzlypenguins.dungeondart.CameraControl;
 import com.grizzlypenguins.dungeondart.Level;
 import com.grizzlypenguins.dungeondart.PackedLevel;
 import com.grizzlypenguins.dungeondart.effects.Effect;
@@ -29,6 +31,7 @@ public class MainCharacter implements Serializable {
     public boolean stunned = false;
     public boolean slowed = false;
 
+    public MainCharacterMovement mainCharacterMovement;
 
 
     public ArrayList<Effect> effects = new ArrayList<Effect>();
@@ -41,6 +44,7 @@ public class MainCharacter implements Serializable {
         this.speed = speed;
     }
 
+
     public void tick () // da se aktiviraat powerUps-ot t.e. effectite od powerUps i Traps
     {
 
@@ -50,52 +54,8 @@ public class MainCharacter implements Serializable {
 
         float x = (int) (myFactory.TILENUMBER / 2) * myFactory.TILESIZE;
         float y = x;
-        c.drawBitmap(myFactory.getInstance().Character, x, y, myFactory.getInstance().paint);
-        if (alive) {
-            if (moves) {
 
-                num_of_animation++;
-                switch (num_of_animation) {
-                    case 1: {
-
-                        break;
-                    }
-                    case 2: {
-                        break;
-                    }
-                    case 3: {
-                        break;
-                    }
-                    case 4: {
-                        break;
-                    }
-                    case 5: {
-
-                        num_of_animation = 0;
-                        break;
-                    }
-                    default: {
-                        num_of_animation = 0;
-                        break;
-                    }
-                }
-            } else //draw a standby animation
-            {
-
-                if (standby) {
-
-
-                    standby = false;
-                } else {
-
-
-                    standby = true;
-                }
-
-            }
-        } else {
-
-        }
+        mainCharacterMovement.render(c,x,y);
 
         if (stunned) {
             c.drawBitmap(myFactory.getInstance().TrapR, x, y, myFactory.getInstance().paint);
