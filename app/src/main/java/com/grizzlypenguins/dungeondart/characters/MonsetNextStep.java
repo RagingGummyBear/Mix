@@ -15,6 +15,10 @@ import java.util.ArrayList;
 
 /**
  * Created by Darko on 01.12.2015.
+ *
+ *  This class its not used !!!!
+ *
+ *
  */
 public class MonsetNextStep implements Runnable {
 

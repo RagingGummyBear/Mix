@@ -9,9 +9,11 @@ import com.grizzlypenguins.dungeondart.myFactory;
 
 /**
  * Created by Darko on 07.01.2016.
+ *
  */
 public class MainCharacterMovement implements SimpleAnimation {
 
+    //
     CameraControl cameraControl;
     int animation = 0; //Which picture to use and when to draw it
     int facingSide = 0; // 0 = down, 1 = right, 2 = up, 3 = left, -1 = notmoving

@@ -7,22 +7,28 @@ import com.grizzlypenguins.dungeondart.Activities.GamePanel;
 
 /**
  * Created by Darko on 22.11.2015.
+ *
+ * This class is a form of timer. Its used to generate different thread for displaying the gameObjects to remove some screen stuttering.
+ * As well as to invoke the tick() method in the GamePanel class.
  */
 
 public class MyGameLoop extends Thread {
 
-    private GamePanel view;
-    private boolean running = false;
+    private GamePanel view; //Where he should call the render or the tick function
+    private boolean running = false;  //Whenever this thread should still work or not
     boolean once=true;
     boolean finished = true;
+
+    //render is the Thread used for dealing with the graphics
     Runnable render = new Runnable() {
         @Override
         public void run() {
-           if(finished) render();
+           if(finished)  //Checks if the previous thread has finished to prevent memory leak
+               render();
         }
     };
-    Thread renderSecondary = new Thread(render);
 
+    Thread renderSecondary = new Thread(render);
     public MyGameLoop(GamePanel view) {
         this.view = view;
     }
@@ -31,6 +37,7 @@ public class MyGameLoop extends Thread {
         running = run;
     }
 
+    //Main function. Function that determines when the tick() and the render() should be called. Needs refactoring!!!
     @Override
     public void run() {
         long lastTime=System.nanoTime();
@@ -54,8 +61,6 @@ public class MyGameLoop extends Thread {
                 if(once) {
                     renderSecondary.run();
                   //  render();
-
-
                 }
             frames++;
 
@@ -68,27 +73,24 @@ public class MyGameLoop extends Thread {
 
         }
 
-
     }
-
+    //Invokes the tick() in gamePanel. Its the processing part of the Application.
     void tick()
     {
 
         view.tick();
     }
-
+    //Invokes the render() in gamePanel. Its the graphical part of the Application.
     synchronized void  render()
     {
         finished = false;
         Canvas c = null;
         try {
-            c = view.getHolder().lockCanvas();
+            c = view.getHolder().lockCanvas();  //gets the canvas from the GamePanel ( since GamePanel is SurfaceView )
             //  c = view.getHolder().lockCanvas();
-
-
             synchronized ( view.getHolder()) {
                 if( c != null ){
-                    view.draw(c);
+                    view.draw(c);  // draw == render
                 }
             }
         } finally {

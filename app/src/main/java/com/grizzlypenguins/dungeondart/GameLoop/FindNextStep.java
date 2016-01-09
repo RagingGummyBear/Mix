@@ -15,20 +15,30 @@ import java.util.ArrayList;
 
 /**
  * Created by Darko on 01.12.2015.
+ *
+ * Class used to find the path between the Monster and the Player. Which gives the monster its next step.
+ * Because this class requires a lot of processing we had to make it in its own thread. We used the A* algorithm
+ * since is the most suitable for our problem.
+ *
  */
 public class FindNextStep implements Runnable {
+    //Needed information to the A* algorithm
     AreaMap map;
     AStar aStar;
     AStarHeuristic heuristic = new ManhattanHeuristic();
 
-    int [][] maze;
+
+    int [][] maze; //Its the define values of the Tiles used in the current playing Map
+
     public boolean finished = true;
 
     public  MyPoint playerLocation;
     public MyPoint monsterLocation;
 
-    public MyPoint nextStep= new MyPoint(0,0);
+    public MyPoint nextStep= new MyPoint(0,0); //Monster will use this for his next step once the algorithm finished
 
+
+    //Needs refactoring (Da se dodade evilMonster referenca i da se pomesti od myFactory vo evilMonster)
     public FindNextStep(int[][] maze, MyPoint playerLocation, MyPoint monsterLocation)
     {
         this.maze = maze;

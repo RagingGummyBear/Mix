@@ -25,6 +25,7 @@ import javax.security.auth.callback.Callback;
 
 /**
  * Created by Darko on 22.11.2015.
+ * Connects the GamePLayActivity , the PackedLevel and the GameLoop
  */
 public class GamePanel extends SurfaceView implements SurfaceHolder.Callback {
 

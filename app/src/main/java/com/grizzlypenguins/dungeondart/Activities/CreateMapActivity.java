@@ -2,6 +2,7 @@ package com.grizzlypenguins.dungeondart.Activities;
 
 import android.app.Activity;
 import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Handler;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -40,23 +41,23 @@ import java.util.ArrayList;
 
 public class CreateMapActivity extends FragmentActivity {
 
-    CameraControl cameraControl;
-    LevelMap levelMap;
+    CameraControl cameraControl; //controls the movement in the map
+    LevelMap levelMap; //The map that we are making
 
-    Handler timerHandler = new Handler();
+    Handler timerHandler = new Handler(); //waits for the activity to start in order to calculate the zoom correctly for the cameraControl
     Runnable timerRunnable = new Runnable() {
         @Override
         public void run() {
-
-
                 render();
            if(shouldRun) timerHandler.postDelayed(this, 500);
         }
     };
 
-    private int mapWidth=100;
+    private int mapWidth=100;  //predefined size of the map, just for safety
     private int mapHeight=100;
+
     float cameraZoom;
+
     ScaleCreateMapActivity scaleCreateMapActivity;
 
     SurfaceView mapSurfaceView;
@@ -76,6 +77,7 @@ public class CreateMapActivity extends FragmentActivity {
 
     private boolean once = true;
     private boolean shouldRun = true;
+    private boolean listViewFF = true;
 
 
 
@@ -92,11 +94,10 @@ public class CreateMapActivity extends FragmentActivity {
         set_listeners();
         if(cameraControl.tiles[1][1]==null)
         Log.v("Creating map","The tiles are null");
-        render();
+        render(); //refreshes the drawing of the surfaceView
         timerHandler.postDelayed(timerRunnable, 500);
         scaleCreateMapActivity = (ScaleCreateMapActivity) getIntent().getSerializableExtra("ScaleCreateMapActivity");
         resizeLayouts();
-
     }
 
     void initialize()
@@ -234,7 +235,7 @@ public class CreateMapActivity extends FragmentActivity {
                 switch(event.getAction()) {
                     case MotionEvent.ACTION_DOWN:
 
-                        showTileFragment();
+                        toggleTileFragment();
                         // PRESSED
                         return true; // if you want to handle the touch event
                     case MotionEvent.ACTION_UP:
@@ -287,10 +288,6 @@ public class CreateMapActivity extends FragmentActivity {
         moveLeft.getLayoutParams().height = scaleCreateMapActivity.middleButtonHeight; //(int)  (getResources().getDisplayMetrics().density*(getWindow().getDecorView().getHeight()*0.02));
 
 
-        // layout.height = (int) (getWindow().getDecorView().getHeight()*0.2);
-        // layout.width = (int) (getWindow().getDecorView().getWidth()*0.2);
-        //move_left.setLayoutParams(new RelativeLayout.LayoutParams(layout));
-
         moveUp.getLayoutParams().width = scaleCreateMapActivity.notMiddleButtonWidth;
         moveUp.getLayoutParams().height = scaleCreateMapActivity.notMiddleButtonHeight;
 
@@ -312,10 +309,22 @@ public class CreateMapActivity extends FragmentActivity {
         ((RelativeLayout.LayoutParams) moveUp.getLayoutParams()).setMargins(0,0,0,0);
 
 
+        if(android.os.Build.VERSION.SDK_INT < 16) {
+            moveLeft.setBackgroundDrawable(new BitmapDrawable(getResources(), myFactory.getInstance().arrowL));
+            moveUp.setBackgroundDrawable(new BitmapDrawable(getResources(), myFactory.getInstance().arrowR));
+            moveDown.setBackgroundDrawable(new BitmapDrawable(getResources(), myFactory.getInstance().arrowD));
+            moveRight.setBackgroundDrawable(new BitmapDrawable(getResources(), myFactory.getInstance().arrowU));
+        }
+        else {
+            moveLeft.setBackground(new BitmapDrawable(getResources(),myFactory.getInstance().arrowL));
+            moveUp.setBackground(new BitmapDrawable(getResources(),myFactory.getInstance().arrowU));
+            moveDown.setBackground(new BitmapDrawable(getResources(),myFactory.getInstance().arrowD));
+            moveRight.setBackground(new BitmapDrawable(getResources(),myFactory.getInstance().arrowR));
 
-        // PackedLevel level ;
-        // GamePanel gamePanel;
+        }
+
     }
+
 
     public void showTileFragment()
     {
@@ -330,8 +339,21 @@ public class CreateMapActivity extends FragmentActivity {
         render();
     }
 
+    public void toggleTileFragment() //Toggles surfaceView and the list to select tiles
+    {
+        if(listViewFF)
+        {
+            showTileFragment();
+            listViewFF = false;
+        }
+        else
+        {
+            listViewFF = true;
+            hideTileFragment();
+        }
+    }
 
-    void drawTileAtLocation(float x,float y)
+    void drawTileAtLocation(float x,float y) //draw te specific choosed tile to the selected location
     {
         if(selectedTileType== null) {
             Log.v("CreatingMap","SelectedTile is null");
@@ -354,6 +376,7 @@ public class CreateMapActivity extends FragmentActivity {
     {
         cameraControl.tiles = levelMap.getShowingTiles(cameraControl.player_position);
     }
+
     void moveUp()
     {
         MyPoint temp = cameraControl.player_position;
@@ -394,7 +417,7 @@ public class CreateMapActivity extends FragmentActivity {
     public void chooseTile(String s)
     {
         selectedTileType = s;
-        Log.v("CreatingMap","You have selected tile type: "+s);
+        //og.v("CreatingMap","You have selected tile type: "+s);
     }
 
 
@@ -420,7 +443,7 @@ public class CreateMapActivity extends FragmentActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    void render()
+    void render()  //Draws on the surfaceView
     {
         //Log.v("CreateMap","Rendering");
         canvas =  mapSurfaceView.getHolder().lockCanvas();

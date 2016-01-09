@@ -20,12 +20,15 @@ import java.util.ArrayList;
 
 /**
  * Created by Darko on 22.11.2015.
+ * Contains the game logic.
+ * Has reference to all of the game objects
+ *
  */
 public class PackedLevel implements Serializable {
 
-    public PlayerScoring playerScoring;
-    public Difficulty difficulty;
-    public LevelMap levelMap;
+    public PlayerScoring playerScoring;  //Calculates the score and the time for the game
+    public Difficulty difficulty; //Has information about the difficulty of the the current game
+    public LevelMap levelMap; //The playable map
     public CameraControl cameraControl;
     public MainCharacter mainCharacter;
     public TorchLight torchLight;

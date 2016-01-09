@@ -20,6 +20,8 @@ import java.util.Random;
 
 /**
  * Created by Darko on 16.11.2015.
+ * This class has reference to all of the bitmaps that will be used in the application,as well as some constructors for few objects and test methods.
+ *
  */
 public class myFactory {
 
@@ -60,9 +62,7 @@ public class myFactory {
 
     public Paint paint;
 
-    public MonsetNextStep monsetNextStep;  //pathfinding algo
-    public FindNextStep findNextStep;
-    public Bitmap arrowKey;
+    public FindNextStep findNextStep;//pathfinding algo needs to get refactored to evilMonster
 
     public static myFactory getInstance() {
         return ourInstance;
@@ -76,7 +76,7 @@ public class myFactory {
 
     }
 
-    public LevelMap test_map_4()
+    public LevelMap test_map_4() //Creates a test map
     {
         int tileNum = 60;
         Tile [][]tiles =new Tile [tileNum][tileNum];
@@ -103,7 +103,7 @@ public class myFactory {
         return new LevelMap(tiles,"test_map_4",10004);
     }
 
-    public LevelMap test_map_3()
+    public LevelMap test_map_3() //Creates a test map
     {
         int tileNum = 100;
         //(Tile Tiles [][],int tileNumber, int TileSize,String mapName)
@@ -153,7 +153,6 @@ public class myFactory {
     {
         return new Tile(2,-1,-1);
     }
-
     public Tile newFinishTile()
     {
         return new Tile(3,-1,-1);
@@ -260,7 +259,7 @@ public class myFactory {
         return resizedBitmap;
     }
 
-    public void resize()
+    public void resize() //Resizes all of the bitmaps to the correct size, depending on the screen of the phone
     {
         if(TileMovable!=null)
         {
@@ -368,14 +367,11 @@ public class myFactory {
     {
         return new TrapSlow(200,"PlayerSlow",false);
     }
-    public TrapLowerTorch newTrapLowerTorch()
-    {
+    public TrapLowerTorch newTrapLowerTorch() {
         return new TrapLowerTorch(1,"TrapLowerTorch",false);
     }
 
-
-    public PowerUpMovementSpeed newPowerUpMovementSpeed()
-    {
+    public PowerUpMovementSpeed newPowerUpMovementSpeed() {
         return new PowerUpMovementSpeed(500,"PlayerMovementSpeed",false);
     }
     public PowerUpBonusPoints newPowerUpBonusPoints() {
@@ -385,8 +381,7 @@ public class myFactory {
         return new PowerUpTorchHealth(1,"PowerUpTorchHealth",false);
     }
 
-    public Tile getTileOfType(String s)
-    {
+    public Tile getTileOfType(String s) {
         Tile temp;
         switch (s)
         {
@@ -427,8 +422,8 @@ public class myFactory {
         }
     }
 
-    public LevelMap newBlankMovableMap(int width,int height,String mapname)
-    {
+    //The following 2 types of maps are used in the creatingMapActivity which allows users to make their own maps
+    public LevelMap newBlankMovableMap(int width,int height,String mapname) {
 
         width+=20;
         height+=20;
@@ -469,7 +464,7 @@ public class myFactory {
 
     }
 
-    public void set_Size(float f)
+    public void set_Size(float f)  //Decides the correct size for the bitmaps
     {
         if(f/TILENUMBER<64)
         TILESIZE = (int) (f/TILENUMBER);

@@ -17,15 +17,13 @@ import java.util.ArrayList;
 
 /**
  * Created by Darko on 21.11.2015.
+ * Simple class that contains the effects of PowerUps and Traps as well handles the animation for the mainChacater
  */
 public class MainCharacter implements Serializable {
 
     public int speed=1;
     public static MyPoint location = new MyPoint(0,0);
 
-    public boolean moves = false;    //se koristi za animacijata
-    int num_of_animation = 0;
-    boolean standby = false;
     public boolean alive = false;
 
     public boolean stunned = false;
@@ -34,7 +32,7 @@ public class MainCharacter implements Serializable {
     public MainCharacterMovement mainCharacterMovement;
 
 
-    public ArrayList<Effect> effects = new ArrayList<Effect>();
+    public ArrayList<Effect> effects = new ArrayList<Effect>(); //Container for the Traps and PowerUps activated
 
 
     public MainCharacter (MyPoint location,int speed)
@@ -45,18 +43,20 @@ public class MainCharacter implements Serializable {
     }
 
 
-    public void tick () // da se aktiviraat powerUps-ot t.e. effectite od powerUps i Traps
+    public void tick () // Not used since the effects are dealt with in the PackedLevel
     {
 
     }
 
+    //Drawing the mainCharaacter
     public void render(Canvas c) {
 
         float x = (int) (myFactory.TILENUMBER / 2) * myFactory.TILESIZE;
         float y = x;
 
-        mainCharacterMovement.render(c,x,y);
+        mainCharacterMovement.render(c,x,y); // Animation container
 
+        //Few effects that affect the visuals of the player
         if (stunned) {
             c.drawBitmap(myFactory.getInstance().TrapR, x, y, myFactory.getInstance().paint);
         }

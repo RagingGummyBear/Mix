@@ -6,6 +6,7 @@ import java.io.Serializable;
 
 /**
  * Created by Darko on 23.11.2015.
+ * This class renders the shadow (the darkness)
  */
 public class TorchLight implements Serializable {
 
@@ -13,7 +14,7 @@ public class TorchLight implements Serializable {
     public float decrease;
     int timeToDecrease = 100;
     int counter = 2;
-    public float life=100;
+    public float life=100; //Its used to calculate the score
     float lightIt = (float) 0.5;
     float damage = 1;
 
@@ -57,7 +58,7 @@ public class TorchLight implements Serializable {
     }
 
 
-    public void render(Canvas c)
+    public void render(Canvas c)   //NEEDS REFACTORING!!
     {
         int start = (int) Math.floor(myFactory.TILENUMBER / 2);
         //start ++;
@@ -99,8 +100,6 @@ public class TorchLight implements Serializable {
             }
             return;
         }
-
-
         for(int i=start;i<end;i++)
         {
             for(int y=start;y<end;y++)

@@ -17,15 +17,13 @@ import java.util.ArrayList;
  */
 public class EvilMonster implements Serializable{
 
-    public int [][]movementMap;
+    public int [][]movementMap; //required for the NextStep Algorithm
     public MyPoint location = new MyPoint(0,0);
     public MyPoint playerLocation = new MyPoint(0,0);
     private Thread thread;
-    public int facingSide = 0; // 0 = down, 1 = right, 2 = up, 3 = left, -1 = notmoving
+    public int facingSide = 0; // 0 = down, 1 = right, 2 = up, 3 = left, -1 = notmoving (Its required for animation)
 
-    private boolean runAlgo = false;
-
-    public int speed;
+    public int speed; //smaller speed = moves faster , higher speed = moves slower
     int move = 1;
 
     public SimpleAnimation monsterAnim;
@@ -47,11 +45,10 @@ public class EvilMonster implements Serializable{
         this.move = speed;
     }
 
-    private void decideFacingSide(int x,int y)
+    private void decideFacingSide(int x,int y)  //this function is needed for animation and its being called from the SimpleAnimation monsterAnim
     {
 
         // 0 = down, 1 = right, 2 = up, 3 = left, -1 = notmoving
-
         if(x>0)
         {
             if(y==0)
@@ -59,7 +56,6 @@ public class EvilMonster implements Serializable{
                 facingSide = 1;
                 return;
             }
-
         }
         if(y>0)
         {
@@ -89,7 +85,7 @@ public class EvilMonster implements Serializable{
         facingSide = 0;
     }
 
-    public boolean tick()
+    public boolean tick()  //Starts the algorithm for finding next step. If its finished it checks for the next step. NEEDS REFACTORING!!! (make the algorithm tell the monster when to move, to make it more efficient when it takes longer to find the next step)
     {
 
             if (move >= speed) {
@@ -119,7 +115,7 @@ public class EvilMonster implements Serializable{
     }
 
 
-    public boolean step ()
+    public boolean step () //If true the game has finished, monster caught the player
     {
       //  location.y+=nextStep.y;
        // location.x+=nextStep.x;
@@ -130,7 +126,7 @@ public class EvilMonster implements Serializable{
         else return false;
     }
 
-    public void render(Canvas c,float x,float y)
+    public void render(Canvas c,float x,float y) //Moved the drawing of the monster into the cameraControl (bad implementation)
     {
 
     }

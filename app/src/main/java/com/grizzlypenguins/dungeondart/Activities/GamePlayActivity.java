@@ -130,7 +130,7 @@ public class GamePlayActivity extends Activity implements SensorEventListener {
         layout = (RelativeLayout.LayoutParams) move_left.getLayoutParams();
         move_left.getLayoutParams().width = scaleGamePlayActivity.middleButtonWidth;   //(int) (getResources().getDisplayMetrics().density*(getWindow().getDecorView().getWidth()*0.05));
         move_left.getLayoutParams().height = scaleGamePlayActivity.middleButtonHeight; //(int)  (getResources().getDisplayMetrics().density*(getWindow().getDecorView().getHeight()*0.02));
-        Log.v("GamePlayActivity","width: " + scaleGamePlayActivity.middleButtonWidth+" height: " + scaleGamePlayActivity.middleButtonHeight);
+      //  Log.v("GamePlayActivity","width: " + scaleGamePlayActivity.middleButtonWidth+" height: " + scaleGamePlayActivity.middleButtonHeight);
 
         // layout.height = (int) (getWindow().getDecorView().getHeight()*0.2);
        // layout.width = (int) (getWindow().getDecorView().getWidth()*0.2);

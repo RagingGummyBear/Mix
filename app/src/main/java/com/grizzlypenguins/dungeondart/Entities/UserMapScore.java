@@ -15,6 +15,12 @@ public class UserMapScore {
     private int score;
     private String time;
 
+    // migrated from Stat class
+    private int noPowerUps;
+    private int noPlays;
+
+    // false = 0, true = 1
+    private int win;
 
     public int getId() {
         return _id;
@@ -52,8 +58,32 @@ public class UserMapScore {
         return _userid;
     }
 
+    public int getNoPowerUps() {
+        return noPowerUps;
+    }
+
+    public void setNoPowerUps(int number) {
+        noPowerUps = number;
+    }
+
+    public int getNoPlays() {
+        return noPlays;
+    }
+
+    public void setNoPlays(int number) {
+        noPlays = number;
+    }
+
     public void set_userid(int _userid) {
         this._userid = _userid;
+    }
+
+    public int getWin() {
+        return win;
+    }
+
+    public void setWin(int number) {
+        win = number;
     }
 
     public UserMapScore() {

@@ -32,16 +32,25 @@ import com.grizzlypenguins.dungeondart.myFactory;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+
+/**
+ *  MainMenu is the starting activity. From this activity we can start playing the game,create new maps for play
+ *  and connect to googleplay.
+ */
+
 public class MainMenu extends Activity {
 
-    RelativeLayout mainScreen;
-    FrameLayout createGameScreen;
-    RelativeLayout scoreScreen;
-    FrameLayout createMapScreen;
+    //We keep reference for the few other layouts that change when using the buttons from the mainMneu
+    RelativeLayout mainScreen;  //The starting screen
+    FrameLayout createGameScreen; //Screen used for selecting map and difficulty before starting a game
+    RelativeLayout scoreScreen; //Screen that is used after the player has finish a game, whenever he won or lost
+    FrameLayout createMapScreen; //Screen where the user needs to give information before starting to create the map
 
+    //mapView and mapList are used to show maps available for play and the score achieved on them. They are used in createGameScreen
     ListView mapView;
     ArrayList<ListInput> mapList = new ArrayList<ListInput>();
 
+    //We keep reference to the buttons that in the mainMenu, so that we can add listerners to them and change layoutParameters
     Button newGame;
     Button exitGame;
     Button startGame;
@@ -50,24 +59,28 @@ public class MainMenu extends Activity {
     Button backCreateMap;
     Button nextCreateMap;
 
+    //timePlayed and socredPoits are present in the scoreScreen and are used to display few informations about the game that was finished
     TextView timePlayed;
     TextView scoredPoints;
 
+    //ratingBar and startNewLevel give us information about the difficulty settings and the selected map for the next game
     RatingBar ratingBar;
     Level startNewLevel;
+    LevelMap pickedMapLevel; //Its the actual selected map from the ListView mapView
+
+    //Reference to the screen so we can get the Height and Width (needs to be refactored since its not required to have reference to it)
     Window window;
 
-    LevelMap pickedMapLevel;
+    //Class that helps with moving between the layouts in the mainMenu
     MainMenuSettings mainMenuSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_menu);
 
-        initialize();
-        set_listeners();
+        initialize(); //Sets the references to the buttons,layouts etc.
+        set_listeners();//Sets listeners to the buttons
 
         //TEST MAPS
         //should remove these
@@ -80,7 +93,9 @@ public class MainMenu extends Activity {
         temp = myFactory.getInstance().test_map_4();
         ListInput temp2 = new ListInput(temp.getMapName(), 0, temp.getId());
         this.add_map(temp2);
-        window = this.getWindow();
+
+
+        window = this.getWindow();//as said previously this needs to get refactored and removed
 
     }
     public void GoogleLoging(View v){
@@ -99,16 +114,17 @@ public class MainMenu extends Activity {
     }
 
     public void createMapButtonPressed(View v){
+        //Doesnt do something special just changes the current layout
+
                 mainMenuSettings.mainmenu = false;
                 mainMenuSettings.scoreScreen = false;
                 mainMenuSettings.newGameScree = false;
                 mainMenuSettings.createMapScreen = true;
+
                 toggle_layout();
     }
 
     private void initialize() {
-
-
 
         mainScreen = (RelativeLayout)findViewById(R.id.firstScreen);
         createGameScreen = (FrameLayout)findViewById(R.id.createGameScreen);
@@ -127,26 +143,25 @@ public class MainMenu extends Activity {
         backCreateMap = (Button) findViewById(R.id.createMapBack);
         nextCreateMap = (Button)findViewById(R.id.mapCreateNext);
 
-
-
         timePlayed = (TextView) findViewById(R.id.timeFinished);
         scoredPoints = (TextView) findViewById(R.id.scoreText);
 
         mapView = (ListView) findViewById(R.id.listView);
 
         mainMenuSettings = (MainMenuSettings) getIntent().getSerializableExtra("mainMenuSettings");
-        if(mainMenuSettings!=null)
+        if(mainMenuSettings!=null) //Incase we return to the mainMenu the layout settings might be changed and we need to check for the current settings
         {
             toggle_layout();
         }
-        else
+        else  //Happens when we first start the app and we dont return to the mainActivity from some other activiry
         {
             mainMenuSettings = new MainMenuSettings();
             mainMenuSettings.mainmenu = true;
             toggle_layout();
         }
+
         PlayerScoring playerScoring = (PlayerScoring) getIntent().getSerializableExtra("scoring");
-        if(playerScoring!=null)
+        if(playerScoring!=null)  //We have finished the game and now we need to display the Information about the game that the user played.
         {
             timePlayed.setText(playerScoring.getTime());
             scoredPoints.setText(String.format(playerScoring.score+""));
@@ -177,7 +192,7 @@ public class MainMenu extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-    void toggle_layout()
+    void toggle_layout()  //function that hides and show the layouts based on the mainMenuSettings( usually the mainMenuSettings is modified with pressing buttons )
     {
 
         if(mainMenuSettings.mainmenu)
@@ -230,12 +245,12 @@ public class MainMenu extends Activity {
 
     }
 
-    void set_listeners()
+    void set_listeners() //Function where we assign behavior for pressing buttons
     {
 
+        //backCreateMap just changes the displaying layout in the mainMneu
         backCreateMap.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
-
 
                 mainMenuSettings.mainmenu = true;
                 mainMenuSettings.createMapScreen = false;
@@ -245,37 +260,42 @@ public class MainMenu extends Activity {
             }
         });
 
+
+        //Starts the CreateMapActivity
         nextCreateMap.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
 
 
-                initializeBitmaps();
+                initializeBitmaps();  //Initializes the Bitmaps that will be used for creating map and resize them
                 mainMenuSettings.mainmenu = true;
                 mainMenuSettings.createMapScreen = false;
                 mainMenuSettings.newGameScree = false;
                 mainMenuSettings.scoreScreen = false;
                 toggle_layout();
 
+                //myIntent changes to the CreateMapActivity
                 Intent myIntent = new Intent(MainMenu.this, CreateMapActivity.class);
+
+                //Gets the number of tiles in width for the map and stores them into the intent
                 EditText temp = (EditText)findViewById(R.id.mapWidth);
                 int temp2 = Integer.parseInt(temp.getText().toString());
                 myIntent.putExtra("mapWidth",temp2);
+
+                //Gets the number of tiles in height for the map and stores them into the intent
                 temp = (EditText)findViewById(R.id.mapHeight);
                 temp2 = Integer.parseInt(temp.getText().toString());
                 myIntent.putExtra("mapHeight",temp2);
 
+                //Information required for the correct scaling in the next Activity
                 ScaleCreateMapActivity scaleCreateMapActivity= new ScaleCreateMapActivity();
                 scaleCreateMapActivity.setAll(getWindow().getDecorView().getWidth(), getWindow().getDecorView().getHeight());
-
                 myIntent.putExtra("ScaleCreateMapActivity", scaleCreateMapActivity);
-
-
 
                 startActivity(myIntent);
             }
         });
 
-
+        //Changes the Layout
         newGame.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
 
@@ -288,6 +308,7 @@ public class MainMenu extends Activity {
             }
         });
 
+        //Closes the app
         exitGame.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
 
@@ -296,9 +317,12 @@ public class MainMenu extends Activity {
 
             }
         });
+
+        //Starts new game
         startGame.setOnClickListener(new View.OnClickListener() {
             public void onClick(View arg0) {
 
+                //User must choose the map and the difficulty before starting the match
                 if(pickedMapLevel == null)
                 {
                     Toast.makeText(MainMenu.this,"You need to choose level before you start",Toast.LENGTH_SHORT).show();
@@ -309,27 +333,30 @@ public class MainMenu extends Activity {
                     Toast.makeText(MainMenu.this,"You need to choose difficulty before you start",Toast.LENGTH_SHORT).show();
                     return;
                 }
+
                 Intent myIntent = new Intent(MainMenu.this,
                         GamePlayActivity.class);
+
+                //Creates a pack of information for the chosen difficulty
                 Difficulty dif = new Difficulty((int) ratingBar.getRating());
 
+                //startNewLevel gets fill with the required information in order to generate PackedMapLevel
                 startNewLevel = new Level(dif, pickedMapLevel,window.getDecorView().getWidth(),window.getDecorView().getHeight());
-                startNewLevel.start();
+                startNewLevel.start(); //Starts generating the PackMapLevel
 
                 initializeBitmaps();
 
-
-
+                //We put ScaleGamePlayActivity in the intent as well so we can have the information required for scaling the next Activity in its onCreate function
                 ScaleGamePlayActivity scaleGamePlayActivity= new ScaleGamePlayActivity();
                 scaleGamePlayActivity.setAll(getWindow().getDecorView().getWidth(), getWindow().getDecorView().getHeight());
 
                 myIntent.putExtra("ScaleGamePlayActivity", scaleGamePlayActivity);
 
+                //Wait for PackedMapLevel to be generated
                 while(startNewLevel.running){
                 }
 
                 myIntent.putExtra("PackedLevel", startNewLevel.packedLevel);
-
                 startActivity(myIntent);
             }
         });
@@ -434,7 +461,7 @@ public class MainMenu extends Activity {
 
             }
 
-    public void pickLevelMap(String name)
+    public void pickLevelMap(String name) //Executes when an item from the mapView is pressed. Based on the id we get the needed map from the DataBase
     {
         //id = mapList.get(id).get_ID();
         switch (name)
@@ -467,7 +494,7 @@ public class MainMenu extends Activity {
         }
     }
 
-    public void addAllMaps(LinkedList<ListInput> listInputs)
+    public void addAllMaps(LinkedList<ListInput> listInputs)  //Adds all map from the database to the mapList
     {
         mapList.clear();
         for(int i = 0;i<listInputs.size();i++)
@@ -477,7 +504,7 @@ public class MainMenu extends Activity {
         }
         mapView.setAdapter(new ListElementAdapter(MainMenu.this, mapList));
     }
-    public void add_map(ListInput listInput)
+    public void add_map(ListInput listInput)  //fills the listView with new content
     {
         mapList.add(listInput);
         mapView.setAdapter(new ListElementAdapter(MainMenu.this, mapList));

@@ -15,7 +15,7 @@ public class LevelMap implements Serializable {
     // table fields
     private int _id;
     private String mapName;
-    private int _userid; // foreign key
+    //private int _userid; // foreign key
 
     public Tile tiles [][];  //tile [height][width]
 
@@ -49,13 +49,15 @@ public class LevelMap implements Serializable {
         mapName = mapname;
     }
 
-    public int getUserId() {
+    /*public int getUserId() {
         return _userid;
     }
 
     public void setUserId(int userid) {
         _userid = userid;
     }
+
+    */
 
     /*
         end of added getters and setters

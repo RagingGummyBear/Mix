@@ -24,7 +24,8 @@ public class DungeonDartDBHandler extends SQLiteOpenHelper {
     private static final String TABLE_USERS = "users";
     private static final String TABLE_MAPS = "maps";
     private static final String TABLE_TILES = "tiles";
-    private static final String TABLE_STATS = "stats";
+    // deleted stats
+    //private static final String TABLE_STATS = "stats";
     private static final String TABLE_USERMAPSCORES = "scores";
 
     public static final String COLUMN_USER_ID = "_id";
@@ -33,7 +34,9 @@ public class DungeonDartDBHandler extends SQLiteOpenHelper {
 
     public static final String COLUMN_MAP_ID = "_id";
     public static final String COLUMN_MAPNAME = "mapname";
-    public static final String COLUMN_USERID_FK = "user_id";
+    //public static final String COLUMN_USERID_FK = "user_id";
+    // added attribute
+    public static final String COLUMN_MAPSTATS = "mapstats";
 
     public static final String COLUMN_TILE_ID = "_id";
     public static final String COLUMN_TILE_TYPE = "type";
@@ -43,13 +46,19 @@ public class DungeonDartDBHandler extends SQLiteOpenHelper {
     public static final String COLUMN_POWERUP = "powerUp";
     public static final String COLUMN_TRAP = "trap";
 
-    public static final String COLUMN_TIME_PLAYED = "time_played";
-    public static final String COLUMN_NOPOWERUPS = "number_powerups";
-    public static final String COLUMN_NOPLAYS = "number_plays";
+    //public static final String COLUMN_TIME_PLAYED = "time_played";
+    //public static final String COLUMN_NOPOWERUPS = "number_powerups";
+    //public static final String COLUMN_NOPLAYS = "number_plays";
 
     public static final String COLUMN_SCORES_ID = "_id";
     public static final String COLUMN_SCORES_SCORE = "score";
     public static final String COLUMN_SCORES_TIME = "time";
+    // added attributes
+    public static final String COLUMN_SCORES_NOPOWERUPS = "number_powerups";
+    public static final String COLUMN_SCORES_NOPLAYS = "number_plays";
+    public static final String COLUMN_SCORES_WIN = "win";
+    // added foreign keys
+    public static final String COLUMN_USERID_FK = "user_id";
 
 
     public DungeonDartDBHandler(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
@@ -69,12 +78,21 @@ public class DungeonDartDBHandler extends SQLiteOpenHelper {
                 + COLUMN_USER_ID + " INTEGER PRIMARY KEY," + COLUMN_USERNAME
                 + " TEXT," + COLUMN_JOINDATE + " TEXT" + ")";
 
+        /* old version of CREATE_MAPS_TABLE
         String CREATE_MAPS_TABLE = "CREATE TABLE " +
                 TABLE_MAPS + "("
                 + COLUMN_MAP_ID + " INTEGER PRIMARY KEY," + COLUMN_MAPNAME
                 + " TEXT," + COLUMN_USERID_FK + " INTEGER,"
                 + " FOREIGN KEY (" + COLUMN_USERID_FK + ") REFERENCES " + TABLE_USERS
                 + "(" + COLUMN_USER_ID + "));";
+        */
+
+        // new version of CREATE_MAPS_TABLE
+        String CREATE_MAPS_TABLE = "CREATE TABLE " +
+                TABLE_MAPS + "("
+                + COLUMN_MAP_ID + " INTEGER PRIMARY KEY," + COLUMN_MAPNAME
+                + " TEXT," + ")";
+
 
         String CREATE_TILES_TABLE = "CREATE TABLE " +
                 TABLE_TILES + "("
@@ -84,7 +102,7 @@ public class DungeonDartDBHandler extends SQLiteOpenHelper {
                 + " FOREIGN KEY (" + COLUMN_MAPID_FK + ") REFERENCES " + TABLE_MAPS
                 + "(" + COLUMN_MAP_ID + "));";
 
-        String CREATE_STATS_TABLE = "CREATE TABLE " +
+       /* String CREATE_STATS_TABLE = "CREATE TABLE " +
                 TABLE_STATS + "("
                 + COLUMN_USERID_FK + " INTEGER," + COLUMN_MAPID_FK + " INTEGER,"
                 + COLUMN_TIME_PLAYED + " TEXT," + COLUMN_NOPOWERUPS + " INTEGER,"
@@ -95,12 +113,15 @@ public class DungeonDartDBHandler extends SQLiteOpenHelper {
                 + "(" + COLUMN_USER_ID + "),"
                 + " FOREIGN KEY (" + COLUMN_MAPID_FK + ") REFERENCES " + TABLE_MAPS
                 + "(" + COLUMN_MAP_ID + "));";
+        */
 
         String CREATE_SCORES_TABLE = "CREATE TABLE " +
                 TABLE_USERMAPSCORES + "("
                 + COLUMN_SCORES_ID + " INTEGER," + COLUMN_USER_ID + " INTEGER,"
                 + COLUMN_MAP_ID + " INTEGER," + COLUMN_SCORES_SCORE + " INTEGER,"
-                + COLUMN_SCORES_TIME + " TEXT,"
+                + COLUMN_SCORES_TIME + " TEXT," + COLUMN_SCORES_NOPOWERUPS + " INTEGER,"
+                + COLUMN_SCORES_NOPLAYS + " INTEGER,"
+                + COLUMN_SCORES_WIN + " INTEGER,"
                 + " PRIMARY KEY (" + COLUMN_SCORES_ID + "), "
                 + " FOREIGN KEY (" + COLUMN_USER_ID + ") REFERENCES " + TABLE_USERS
                 + "(" + COLUMN_USER_ID + "),"
@@ -112,7 +133,7 @@ public class DungeonDartDBHandler extends SQLiteOpenHelper {
         db.execSQL(CREATE_USERS_TABLE);
         db.execSQL(CREATE_MAPS_TABLE);
         db.execSQL(CREATE_TILES_TABLE);
-        db.execSQL(CREATE_STATS_TABLE);
+        //db.execSQL(CREATE_STATS_TABLE);
         db.execSQL(CREATE_SCORES_TABLE);
     }
 
@@ -123,7 +144,8 @@ public class DungeonDartDBHandler extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_MAPS);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_TILES);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_STATS);
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_USERMAPSCORES);
+        //db.execSQL("DROP TABLE IF EXISTS " + TABLE_STATS);
 
         onCreate(db);
     }
@@ -145,7 +167,7 @@ public class DungeonDartDBHandler extends SQLiteOpenHelper {
     public void addMap(LevelMap map) {
         ContentValues values = new ContentValues();
         values.put(COLUMN_MAPNAME, map.getMapName());
-        values.put(COLUMN_USERID_FK, map.getUserId());
+        //values.put(COLUMN_USERID_FK, map.getUserId());
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -167,7 +189,7 @@ public class DungeonDartDBHandler extends SQLiteOpenHelper {
         db.close();
     }
 
-    public void addStat(Stat stat) {
+    /*public void addStat(Stat stat) {
         ContentValues values = new ContentValues();
         values.put(COLUMN_TIME_PLAYED, stat.getTimePlayed());
         values.put(COLUMN_NOPOWERUPS, stat.getNoPowerUps());
@@ -177,7 +199,7 @@ public class DungeonDartDBHandler extends SQLiteOpenHelper {
 
         db.insert(TABLE_STATS, null, values);
         db.close();
-    }
+    }*/
 
     public void addScore(UserMapScore score) {
         ContentValues values = new ContentValues();
@@ -185,6 +207,9 @@ public class DungeonDartDBHandler extends SQLiteOpenHelper {
         values.put(COLUMN_MAPID_FK, score.get_mapid());
         values.put(COLUMN_SCORES_SCORE, score.getScore());
         values.put(COLUMN_SCORES_TIME, score.getTime());
+        values.put(COLUMN_SCORES_NOPOWERUPS, score.getNoPowerUps());
+        values.put(COLUMN_SCORES_NOPLAYS, score.getNoPlays());
+        values.put(COLUMN_SCORES_WIN, score.getWin());
 
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -231,7 +256,7 @@ public class DungeonDartDBHandler extends SQLiteOpenHelper {
             cursor.moveToFirst();
             map.setId(Integer.parseInt(cursor.getString(0)));
             map.setMapName(cursor.getString(1));
-            map.setUserId(Integer.parseInt(cursor.getString(2)));
+            //map.setUserId(Integer.parseInt(cursor.getString(2)));
             cursor.close();
         }
         else {
@@ -255,7 +280,7 @@ public class DungeonDartDBHandler extends SQLiteOpenHelper {
             cursor.moveToFirst();
             map.setId(Integer.parseInt(cursor.getString(0)));
             map.setMapName(cursor.getString(1));
-            map.setUserId(Integer.parseInt(cursor.getString(2)));
+            //map.setUserId(Integer.parseInt(cursor.getString(2)));
             cursor.close();
         }
         else {
@@ -288,11 +313,6 @@ public class DungeonDartDBHandler extends SQLiteOpenHelper {
             }
         }
 
-
-
-
-
-
         return null;
     }
 
@@ -324,7 +344,7 @@ public class DungeonDartDBHandler extends SQLiteOpenHelper {
         return tile;
     }
 
-    public Stat findStat(int user_id, int map_id) {
+    /*public Stat findStat(int user_id, int map_id) {
         String query = "SELECT * FROM " + TABLE_STATS + " WHERE " + COLUMN_USERID_FK + " =\"" + user_id + "\""
                 + " AND " + COLUMN_MAPID_FK + " =\"" + map_id + "\"";
 
@@ -349,6 +369,34 @@ public class DungeonDartDBHandler extends SQLiteOpenHelper {
 
         db.close();
         return stat;
+    }*/
+
+    public UserMapScore findUserMapScore(int id) {
+        String query = "SELECT * FROM " + TABLE_USERMAPSCORES + " WHERE " + COLUMN_SCORES_ID + " = \"" + id + "\"";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        UserMapScore usermapscore = new UserMapScore();
+
+        if (cursor.moveToFirst()) {
+            cursor.moveToFirst();
+            usermapscore.setId(Integer.parseInt(cursor.getString(0)));
+            usermapscore.set_userid(Integer.parseInt(cursor.getString(1)));
+            usermapscore.set_mapid(Integer.parseInt(cursor.getString(2)));
+            usermapscore.setScore(Integer.parseInt(cursor.getString(3)));
+            usermapscore.setTime(cursor.getString(4));
+            usermapscore.setNoPowerUps(Integer.parseInt(cursor.getString(5)));
+            usermapscore.setNoPlays(Integer.parseInt(cursor.getString(6)));
+            usermapscore.setWin(Integer.parseInt(cursor.getString(7)));
+        }
+        else {
+            usermapscore = null;
+        }
+
+        db.close();
+        return usermapscore;
     }
 
     // Deletion methods
@@ -423,7 +471,31 @@ public class DungeonDartDBHandler extends SQLiteOpenHelper {
         return result;
     }
 
-    public boolean deleteStat(int user_id, int map_id) {
+    public boolean deleteUserMapScore(int id) {
+        boolean result = false;
+
+        String query = "SELECT * FROM " + TABLE_USERMAPSCORES + " WHERE " + COLUMN_SCORES_ID + " = \"" + id + "\"";
+
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        Cursor cursor = db.rawQuery(query, null);
+
+        UserMapScore usermapscore = new UserMapScore();
+
+        if (cursor.moveToFirst()) {
+            usermapscore.setId(Integer.parseInt(cursor.getString(0)));
+            db.delete(TABLE_USERMAPSCORES, COLUMN_SCORES_ID + " =?",
+                    new String[] { String.valueOf(usermapscore.getId())});
+            cursor.close();
+            return true;
+        }
+
+        db.close();
+        return result;
+
+    }
+
+    /*public boolean deleteStat(int user_id, int map_id) {
         boolean result = false;
 
         String query = "SELECT * FROM " + TABLE_STATS + " WHERE " + COLUMN_USERID_FK + " =\"" + user_id + "\""
@@ -446,7 +518,7 @@ public class DungeonDartDBHandler extends SQLiteOpenHelper {
 
         db.close();
         return result;
-    }
+    }*/
 
     // Update methods
 

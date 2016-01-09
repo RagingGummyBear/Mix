@@ -13,6 +13,7 @@ import java.io.Serializable;
 
 /**
  * Created by Darko on 17.11.2015.
+ * Its part of the levelMap nad its the blocks on which the user can step on. Prints the tiles and the monster.
  */
 
 public class Tile implements Serializable {
@@ -21,8 +22,8 @@ public class Tile implements Serializable {
     private int _id;
     private int define;  //defines the tile with : 0 wall,1 movable,2 start,3 finish, 4 choosenStart,5 working exit, 6 not working exit, 7 monsterDen
     public int x,y;
-    public int powerUp = 0; // powerUp = 0 , no powerup on that tile
-    public int trap = 0;   // trap = 0, no traps on that Tile trap<0 used trap
+    public int powerUp = -1; // powerUp = -1 , no powerup on that tile
+    public int trap = -1;   // trap = -1, no traps on that Tile trap<0 used trap or no traps
 
     public boolean shadow = false;
     public boolean monster = false;

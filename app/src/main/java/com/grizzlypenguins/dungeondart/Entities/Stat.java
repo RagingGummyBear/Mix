@@ -5,7 +5,9 @@ import java.util.ArrayList;
 /**
  * Created by Nikola on 29-Nov-15.
  */
-public class Stat {
+
+
+/*public class Stat {
 
     // foreign keys forming a composite primary key
     private int _userid;
@@ -65,3 +67,5 @@ public class Stat {
 
 
 }
+
+*/

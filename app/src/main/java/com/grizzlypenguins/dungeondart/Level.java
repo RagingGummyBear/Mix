@@ -5,6 +5,11 @@ import com.grizzlypenguins.dungeondart.characters.MainCharacter;
 
 /**
  * Created by Darko on 17.11.2015.
+ *
+ * This class needs to get refactored.
+ * It creates few new objects and connects the other objects and generates the PackedLevel (which is the actual game).
+ * There is no need for this to be in different thread,
+ *
  */
 public class Level implements Runnable{
     Thread thread;
@@ -18,7 +23,6 @@ public class Level implements Runnable{
     public TorchLight torchLight;
 
     //public EvilMonster evilMonster;
-
 
     public int screenWidth;
     public int screenHeight;
